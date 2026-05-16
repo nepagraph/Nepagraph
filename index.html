@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEPAGRAPH — Visual Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── TOKENS ────────────────────────────────────────────────── */
+    :root {
+      --bg:        #111314;
+      --surface:   #1a1d1f;
+      --border:    #2a2d30;
+      --text:      #e8eaeb;
+      --muted:     #6b7075;
+      --accent:    #2979ff;
+      --accent-gl: rgba(41, 121, 255, 0.12);
+      --accent-b:  rgba(41, 121, 255, 0.35);
+      --white:     #ffffff;
+      --gold:      #f5c518;
+      --radius:    6px;
+      --transition: 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* subtle noise overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+    }
+
+    /* ─── SCROLLBAR ─────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    /* ─── HEADER ────────────────────────────────────────────────── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1.5rem, 5vw, 4rem);
+      height: 64px;
+      background: rgba(17, 19, 20, 0.88);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.12em;
+      color: var(--white);
+      text-decoration: none;
+    }
+    .logo span { color: var(--accent); }
+
+    nav { display: flex; align-items: center; gap: 2rem; }
+
+    nav a {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+    nav a:hover { color: var(--accent); }
+
+    .header-socials { display: flex; align-items: center; gap: 1rem; }
+
+    .header-socials a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--muted);
+      text-decoration: none;
+      transition: all var(--transition);
+    }
+    .header-socials a:hover {
+      border-color: var(--accent-b);
+      color: var(--accent);
+      background: var(--accent-gl);
+    }
+    .header-socials svg { width: 15px; height: 15px; }
+
+    /* ─── HERO ──────────────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      padding: clamp(5rem, 12vw, 9rem) clamp(1.5rem, 5vw, 4rem) clamp(3rem, 6vw, 5rem);
+    }
+
+    .hero-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+    }
+
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.5rem, 10vw, 8rem);
+      line-height: 0.92;
+      letter-spacing: 0.02em;
+      color: var(--white);
+      max-width: 16ch;
+    }
+    .hero h1 .dim { color: var(--border); }
+
+    .hero-sub {
+      margin-top: 2rem;
+      max-width: 44ch;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.75;
+    }
+
+    .hero-line {
+      position: absolute;
+      right: clamp(1.5rem, 5vw, 4rem);
+      top: clamp(5rem, 12vw, 9rem);
+      width: 1px;
+      height: 120px;
+      background: linear-gradient(to bottom, transparent, var(--accent), transparent);
+      opacity: 0.4;
+    }
+
+    /* ─── SECTION WRAPPER ───────────────────────────────────────── */
+    section {
+      padding: clamp(3rem, 7vw, 6rem) clamp(1.5rem, 5vw, 4rem);
+      position: relative;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 1.2rem;
+      margin-bottom: 3rem;
+    }
+
+    .section-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      letter-spacing: 0.04em;
+      color: var(--white);
+      line-height: 1;
+    }
+
+    .section-rule {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ─── PROJECT GRID ──────────────────────────────────────────── */
+    .grid-projects {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+      gap: 1.5px;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      background: var(--surface);
+      cursor: pointer;
+      aspect-ratio: 4/3;
+    }
+
+    .card-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1), filter 0.55s ease;
+      filter: grayscale(20%);
+    }
+
+    .card:hover .card-thumb {
+      transform: scale(1.06);
+      filter: grayscale(0%);
+    }
+
+    .card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(17,19,20,0.95) 0%, rgba(17,19,20,0.2) 55%, transparent 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1.5rem;
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+    .card:hover .card-overlay { opacity: 1; }
+
+    .card-category {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+    }
+
+    .card-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.35rem;
+      letter-spacing: 0.05em;
+      color: var(--white);
+      line-height: 1.1;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.6rem;
+    }
+
+    .tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.55rem;
+      border: 1px solid var(--accent-b);
+      border-radius: 2px;
+      color: var(--accent);
+    }
+
+    .card-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .btn-rate {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.4rem 0.9rem;
+      background: var(--accent);
+      color: var(--white);
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: opacity var(--transition);
+    }
+    .btn-rate:hover { opacity: 0.82; }
+
+    .card-rating-display {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--gold);
+    }
+
+    /* ─── MODAL ─────────────────────────────────────────────────── */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10,11,12,0.82);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal-backdrop.open { display: flex; }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: clamp(1.5rem, 4vw, 2.5rem);
+      width: 100%;
+      max-width: 460px;
+      animation: modalIn 0.26s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(16px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-project-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.05em;
+      color: var(--white);
+      margin-bottom: 0.25rem;
+    }
+
+    .modal-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.65;
+    }
+
+    .star-row {
+      display: flex;
+      gap: 0.4rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .star {
+      font-size: 1.8rem;
+      cursor: pointer;
+      transition: transform 0.15s ease, filter 0.15s ease;
+      filter: grayscale(1) opacity(0.3);
+      user-select: none;
+    }
+    .star.active, .star:hover { filter: grayscale(0) opacity(1); transform: scale(1.15); }
+
+    .feedback-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      padding: 0.75rem 1rem;
+      resize: none;
+      height: 90px;
+      outline: none;
+      transition: border-color var(--transition);
+    }
+    textarea:focus { border-color: var(--accent-b); }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      margin-top: 1.2rem;
+    }
+
+    .btn-cancel {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.5rem 1.1rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .btn-cancel:hover { border-color: var(--muted); color: var(--text); }
+
+    .btn-submit {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.5rem 1.2rem;
+      background: var(--accent);
+      border: none;
+      border-radius: var(--radius);
+      color: var(--white);
+      cursor: pointer;
+      transition: opacity var(--transition);
+    }
+    .btn-submit:hover { opacity: 0.82; }
+
+    .modal-success {
+      display: none;
+      text-align: center;
+      padding: 2rem 0 1rem;
+    }
+    .modal-success .check {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .modal-success p {
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    /* ─── TRUSTED BY / LOGO GRID ─────────────────────────────────── */
+    #trusted { border-top: 1px solid var(--border); }
+
+    .logo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 180px), 1fr));
+      gap: 1px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--border); /* gap color */
+    }
+
+    .logo-cell {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2.2rem 2rem;
+      background: var(--surface);
+      overflow: hidden;
+      cursor: default;
+      transition: background var(--transition);
+    }
+
+    /* shimmer glow on hover */
+    .logo-cell::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, var(--accent-gl) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+    .logo-cell:hover::before { opacity: 1; }
+    .logo-cell:hover { background: #1e2226; }
+
+    .logo-cell img {
+      max-width: 110px;
+      max-height: 38px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      /* grayscale + low opacity default — the "ghost" look */
+      filter: grayscale(1) brightness(2) opacity(0.25);
+      transition: filter 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      display: block;
+    }
+
+    .logo-cell:hover img {
+      /* full color, full opacity on hover */
+      filter: grayscale(0) brightness(1) opacity(1);
+      transform: scale(1.06);
+    }
+
+    /* fallback text when image fails */
+    .logo-cell .logo-fallback {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* ─── FOOTER ────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem clamp(1.5rem, 5vw, 4rem);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-copy {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    .footer-socials { display: flex; align-items: center; gap: 1rem; }
+
+    .footer-socials a {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+    .footer-socials a:hover { color: var(--accent); }
+    .footer-socials svg { width: 13px; height: 13px; }
+
+    /* ─── FLOATING WHATSAPP ─────────────────────────────────────── */
+    #wa-btn {
+      position: fixed;
+      bottom: 1.8rem;
+      right: 1.8rem;
+      z-index: 150;
+      width: 52px;
+      height: 52px;
+      background: #25D366;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 24px rgba(37, 211, 102, 0.35);
+      text-decoration: none;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    #wa-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 32px rgba(37, 211, 102, 0.55);
+    }
+    #wa-btn svg { width: 26px; height: 26px; fill: #fff; }
+
+    /* ping pulse */
+    #wa-btn::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 2px solid #25D366;
+      animation: ping 2.2s ease-out infinite;
+      opacity: 0;
+    }
+    @keyframes ping {
+      0%   { opacity: 0.7; transform: scale(1); }
+      100% { opacity: 0;   transform: scale(1.55); }
+    }
+
+    /* ─── ANIMATIONS ─────────────────────────────────────────────── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* stagger children */
+    .logo-cell { transition-delay: 0ms; }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      nav { display: none; }
+      .logo-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── HEADER ──────────────────────────────────────────────────── -->
+<header>
+  <a href="#" class="logo">NEPA<span>GRAPH</span></a>
+  <nav>
+    <a href="#work">Work</a>
+    <a href="#trusted">Clients</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <div class="header-socials" id="header-socials">
+    <!-- injected by JS -->
+  </div>
+</header>
+
+<!-- ─── HERO ────────────────────────────────────────────────────── -->
+<div class="hero">
+  <p class="hero-label">Visual Studio · Kathmandu, Nepal</p>
+  <h1>We Make <br><span class="dim">Brands</span><br>Unforgettable</h1>
+  <p class="hero-sub">Photography, motion, identity, and digital design rooted in Himalayan perspective — built for global stages.</p>
+  <div class="hero-line"></div>
+</div>
+
+<!-- ─── WORK / PROJECT GRID ─────────────────────────────────────── -->
+<section id="work">
+  <div class="section-header fade-up">
+    <span class="section-eyebrow">// 01</span>
+    <h2 class="section-title">Selected Work</h2>
+    <div class="section-rule"></div>
+  </div>
+  <div class="grid-projects" id="project-grid">
+    <!-- injected by JS -->
+  </div>
+</section>
+
+<!-- ─── TRUSTED BY ───────────────────────────────────────────────── -->
+<section id="trusted">
+  <div class="section-header fade-up">
+    <span class="section-eyebrow">// 02</span>
+    <h2 class="section-title">Trusted By</h2>
+    <div class="section-rule"></div>
+  </div>
+  <div class="logo-grid" id="logo-grid">
+    <!-- injected by JS -->
+  </div>
+</section>
+
+<!-- ─── FOOTER ───────────────────────────────────────────────────── -->
+<footer id="contact">
+  <p class="footer-copy" id="footer-copy">© 2025 NEPAGRAPH. All rights reserved.</p>
+  <div class="footer-socials" id="footer-socials">
+    <!-- injected by JS -->
+  </div>
+</footer>
+
+<!-- ─── FLOATING WHATSAPP ────────────────────────────────────────── -->
+<a href="#" id="wa-btn" target="_blank" rel="noopener" title="Chat on WhatsApp" aria-label="WhatsApp">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+</a>
+
+<!-- ─── RATING MODAL ──────────────────────────────────────────────── -->
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div id="modal-form-view">
+      <p class="modal-project-name" id="modal-title"></p>
+      <p class="modal-desc" id="modal-desc"></p>
+      <div class="star-row" id="star-row" role="radiogroup" aria-label="Rating"></div>
+      <label class="feedback-label" for="feedback-text">Leave a comment (optional)</label>
+      <textarea id="feedback-text" placeholder="Your thoughts on this project…"></textarea>
+      <div class="modal-actions">
+        <button class="btn-cancel" id="btn-cancel">Cancel</button>
+        <button class="btn-submit" id="btn-submi
