@@ -1,0 +1,91 @@
+{
+  "socials": {
+    "instagram": "https://instagram.com/nepagraph",
+    "facebook": "https://facebook.com/nepagraph",
+    "whatsapp": "+9779800000000"
+  },
+  "projects": [
+    {
+      "id": 1,
+      "title": "Brand Identity — Himalayan Brew",
+      "category": "Branding",
+      "tags": ["Logo", "Print", "Packaging"],
+      "thumbnail": "https://images.unsplash.com/photo-1634942537034-2531766767d1?w=600&q=80",
+      "description": "Full visual identity system for an artisan Himalayan tea brand — logomark, typography, and packaging suite."
+    },
+    {
+      "id": 2,
+      "title": "Campaign — Kathmandu Jazz Fest",
+      "category": "Print & Digital",
+      "tags": ["Poster", "Social", "Motion"],
+      "thumbnail": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&q=80",
+      "description": "360° campaign spanning billboard posters, social media assets, and animated loop promos."
+    },
+    {
+      "id": 3,
+      "title": "UI Design — Trekkers App",
+      "category": "UI/UX",
+      "tags": ["Mobile", "Figma", "Prototype"],
+      "thumbnail": "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600&q=80",
+      "description": "End-to-end mobile experience for Nepal trekking route planning, permitting, and offline maps."
+    },
+    {
+      "id": 4,
+      "title": "Photography — Everest Base Camp",
+      "category": "Photography",
+      "tags": ["Landscape", "Editorial", "Print"],
+      "thumbnail": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80",
+      "description": "Documentary series capturing the raw, unfiltered journey to Everest Base Camp at 5,364 m."
+    },
+    {
+      "id": 5,
+      "title": "Web Design — Spice Routes",
+      "category": "Web",
+      "tags": ["WordPress", "E-Commerce", "UX"],
+      "thumbnail": "https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&q=80",
+      "description": "Custom e-commerce platform for a Nepali spice exporter — built for global reach, local soul."
+    },
+    {
+      "id": 6,
+      "title": "Motion — Pashmina Heritage",
+      "category": "Video",
+      "tags": ["After Effects", "Brand Film", "2 min"],
+      "thumbnail": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80",
+      "description": "Heritage brand film tracing the 2,000-year craft of Nepali Pashmina weaving, for international distribution."
+    }
+  ],
+  "client_logos": [
+    {
+      "company_name": "Himalayan Bank",
+      "logo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/2560px-Amazon_logo.svg.png"
+    },
+    {
+      "company_name": "Nepal Airlines",
+      "logo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Airbnb_Logo_Bélo.svg/2560px-Airbnb_Logo_Bélo.svg.png"
+    },
+    {
+      "company_name": "Yeti Holdings",
+      "logo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Spotify_logo_with_text.svg/2560px-Spotify_logo_with_text.svg.png"
+    },
+    {
+      "company_name": "Summit Exports",
+      "logo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/2560px-Netflix_2015_logo.svg.png"
+    },
+    {
+      "company_name": "Everest Media",
+      "logo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/IBM_logo.svg/2560px-IBM_logo.svg.png"
+    },
+    {
+      "company_name": "Annapurna Foods",
+      "logo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Meta-Logo.png/2560px-Meta-Logo.png"
+    },
+    {
+      "company_name": "Pokhara Resorts",
+      "logo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Microsoft_logo_%282012%29.svg/2560px-Microsoft_logo_%282012%29.svg.png"
+    },
+    {
+      "company_name": "Sagarmatha Co.",
+      "logo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/2048px-BMW.svg.png"
+    }
+  ]
+}
